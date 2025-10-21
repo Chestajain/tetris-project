@@ -679,19 +679,15 @@
             const deltaY = currentY - touchStartY;
 
             // --- REVISED HORIZONTAL MOVEMENT ---
-            // Calculate the target column based on how far the user has dragged
             const moveBlocks = Math.round(deltaX / BLOCK_SIZE);
             const newX = lastPlayerX + moveBlocks;
 
-            if (newX !== player.pos.x) { // Only perform calculations if the target position has changed
+            if (newX !== player.pos.x) {
                 const originalX = player.pos.x;
                 player.pos.x = newX;
 
-                // If the piece collides, nudge it back towards its original position until it's valid.
-                // This is much more performant than the previous implementation.
                 let direction = newX > originalX ? -1 : 1; 
                 while (collide(player.matrix, player.pos)) {
-                    // Stop if we've nudged all the way back to the start
                     if (player.pos.x === originalX) {
                         break; 
                     }
@@ -699,13 +695,12 @@
                 }
             }
 
-            // Vertical movement (soft drop) with a slightly larger threshold
+            // Vertical movement (soft drop)
             if (deltaY > BLOCK_SIZE * 1.5) {
-                if(playerDrop()) { // If piece moved down successfully
-                    score += 1; // Award 1 point for soft drop
+                if(playerDrop()) {
+                    score += 1;
                     updateGameInfo();
                 }
-                // Reset the start coordinates to make continuous dropping feel natural
                 touchStartX = currentX;
                 touchStartY = currentY;
                 lastPlayerX = player.pos.x;
@@ -721,7 +716,6 @@
             
             let endX, endY;
             if (e.type === 'touchend') {
-                 // touchend doesn't have coordinates, so we use the start ones for simple checks
                 endX = touchStartX; 
                 endY = touchStartY;
             } else {
@@ -764,16 +758,15 @@
             } else if (event.key === 'ArrowRight') {
                 playerMove(1);
             } else if (event.key === 'ArrowDown') {
-                event.preventDefault();
-                if (playerDrop()) { // If piece moved down successfully
-                    score += 1; // Award 1 point for soft drop
+                if (playerDrop()) {
+                    score += 1;
                     updateGameInfo();
                 }
             } else if (event.key === 'ArrowUp') {
-                event.preventDefault();
+                event.preventDefault(); // <-- THE FIX IS HERE
                 playerRotate(1);
             } else if (event.key === ' ') {
-                event.preventDefault(); // Prevent page scrolling
+                event.preventDefault();
                 hardDrop();
             }
         });
@@ -783,7 +776,7 @@
             isPaused = !isPaused;
             pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
             if (!isPaused) {
-                lastTime = performance.now(); // Reset time to avoid sudden drop
+                lastTime = performance.now();
                 gameLoop();
             }
         }
