@@ -2,7 +2,7 @@
 
 A complete, playable Tetris game built with HTML, CSS, and modern JavaScript. This project is fully self-contained in a single HTML file and includes responsive design for both desktop and mobile play.
 
-[**► Click Here to Play the Game!**](https://tetrisgame-play.netlify.app/)
+[**► Click Here to Play the Game!**](https://chestatetris.netlify.app/)
 
 ## **Features**
 
